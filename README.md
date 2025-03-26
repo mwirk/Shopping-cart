@@ -1,2 +1,4 @@
-# Shopping-cart
-Shopping cart written in Java
+# Shopping cart
+* Written in Java
+* SOLID
+* Using COMMAND design pattern
