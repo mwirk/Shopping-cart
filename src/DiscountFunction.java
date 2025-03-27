@@ -4,7 +4,7 @@ public interface DiscountFunction {
 }
 
 
-class SumMoreThan300DiscountFunction implements DiscountFunction {
+class SumMoreThan300 implements DiscountFunction {
     @Override
     public List<Product> apply(Cart cart) {
         if (cart.sum > 300) {
@@ -18,7 +18,7 @@ class SumMoreThan300DiscountFunction implements DiscountFunction {
     }
 }
 
-class ThirdCheapestProductIsFreeDiscountFunction implements DiscountFunction {
+class ThirdCheapestProductIsFree implements DiscountFunction {
     @Override
     public List<Product> apply(Cart cart) {
         if (cart.products.size() > 2) {
@@ -30,7 +30,7 @@ class ThirdCheapestProductIsFreeDiscountFunction implements DiscountFunction {
     }
 }
 
-class SumMoreThan200FreeMugDiscountFunction implements DiscountFunction {
+class SumMoreThan200FreeMug implements DiscountFunction {
     @Override
     public List<Product> apply(Cart cart) {
         if (cart.sum > 200) {

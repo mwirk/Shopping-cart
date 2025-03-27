@@ -1,21 +1,19 @@
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 
 public class Cart {
-    public List<Product> products = new ArrayList<Product>();
     public double sum = 0;
+    public List<Product> products = new ArrayList<>();
     CartHistoryManager commandHistory = new CartHistoryManager(this);
 
     public Command command;
     public void setCommand(Command command) {
         this.command = command;
     }
-    public void makeAction() {
+    public List<Product> makeAction() {
         //Deep copy
         commandHistory.commandHistory.put(command, new ArrayList<>(products));
-        command.execute();
+        return command.execute();
     }
 
 
@@ -88,11 +86,11 @@ class ApplyDiscountCommand implements Command{
     }
 }
 
-class FindCheapest implements Command{
+class FindCheapestCommand implements Command{
     private final Cart cart;
     private final List<Product> cheapest = new ArrayList<Product>();
 
-    public FindCheapest(Cart cart){
+    public FindCheapestCommand(Cart cart){
         this.cart = cart;
     }
     @Override
@@ -105,30 +103,30 @@ class FindCheapest implements Command{
     }
 }
 
-class FindMostExpensive implements Command{
+class FindMostExpensiveCommand implements Command{
     private final Cart cart;
     private final List<Product> mostExpensive = new ArrayList<Product>();
 
-    public FindMostExpensive(Cart cart){
+    public FindMostExpensiveCommand(Cart cart){
         this.cart = cart;
     }
     @Override
     public List<Product> execute() {
-        Product minProduct = cart.products.stream()
+        Product maxProduct = cart.products.stream()
                 .max(Comparator.comparing(Product::getPrice))
                 .orElse(null);
-        mostExpensive.add(minProduct);
+        mostExpensive.add(maxProduct);
         return mostExpensive;
     }
 }
 
 
-class Find_N_Cheapest implements Command{
+class Find_N_CheapestCommand implements Command{
     private final Cart cart;
     private final List<Product> cheapest = new ArrayList<Product>();
     private final List<Product> productsCopy;
     private final int howMany;
-    public Find_N_Cheapest(Cart cart, int howMany){
+    public Find_N_CheapestCommand(Cart cart, int howMany){
         this.cart = cart;
         this.productsCopy = new ArrayList<Product>(cart.products);
         this.howMany = howMany;
@@ -147,6 +145,34 @@ class Find_N_Cheapest implements Command{
             productsCopy.remove(minProduct);
         }
         return cheapest;
+    }
+}
+
+class Find_N_Most_ExpensiveCommand implements Command{
+    private final Cart cart;
+    private final List<Product> mostExpensive = new ArrayList<Product>();
+    private final List<Product> productsCopy;
+    private final int howMany;
+    public Find_N_Most_ExpensiveCommand (Cart cart, int howMany){
+        this.cart = cart;
+        this.productsCopy = new ArrayList<Product>(cart.products);
+        this.howMany = howMany;
+    }
+    @Override
+    public List<Product> execute() {
+
+        for (int j=0; j<howMany; j++) {
+
+            Product maxProduct = productsCopy.stream()
+                    .max(Comparator.comparing(Product::getPrice))
+                    .orElse(null);
+
+
+            mostExpensive.add(maxProduct);
+            productsCopy.remove(maxProduct);
+        }
+
+        return mostExpensive;
     }
 }
 
